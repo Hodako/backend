@@ -1,7 +1,7 @@
 const express = require('express');
 const multer = require('multer');
-const { createArticle, getArticles, getArticle } = require('../controllers/articleController');
-const { protect } = require('../middlewares/authMiddleware'); // Ensure this path is correct
+const { createArticle, getArticles, getArticle } = require('../controllers/articleController'); // Ensure correct import
+const { protect } = require('../middlewares/authMiddleware'); // Ensure correct import
 const router = express.Router();
 
 // Configure Multer for file uploads
