@@ -1,7 +1,7 @@
 const express = require('express');
 const multer = require('multer');
-const { createArticle, getArticles, getArticle } = require('../controllers/articleController'); // Ensure correct import
-const { protect } = require('../middlewares/authMiddleware'); // Ensure correct import
+const { createArticle, getArticles, getArticle, uploadFile } = require('../controllers/articleController');
+const { protect } = require('../middlewares/authMiddleware');
 const router = express.Router();
 
 // Configure Multer for file uploads
@@ -21,11 +21,6 @@ router.get('/:id', getArticle);
 
 // Protected routes
 router.post('/', protect, createArticle);
-router.post('/upload', protect, upload.single('file'), (req, res) => {
-  if (!req.file) {
-    return res.status(400).send('No file uploaded.');
-  }
-  res.status(200).send({ filename: req.file.filename, path: req.file.path });
-});
+router.post('/upload', protect, upload.single('file'), uploadFile);
 
 module.exports = router;
