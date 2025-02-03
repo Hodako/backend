@@ -1,17 +1,27 @@
 const express = require('express');
 const multer = require('multer');
 const { createArticle, getArticles, getArticle } = require('../controllers/articleController');
-const { protect } = require('../middlewares/authMiddleware');
+const { protect } = require('../middlewares/authMiddleware'); // Ensure this path is correct
 const router = express.Router();
 
-const upload = multer({ dest: 'uploads/' });
+// Configure Multer for file uploads
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'uploads/');
+  },
+  filename: (req, file, cb) => {
+    cb(null, `${Date.now()}-${file.originalname}`);
+  }
+});
+const upload = multer({ storage: storage });
 
-router.post('/', protect, createArticle);
+// Public routes
 router.get('/', getArticles);
 router.get('/:id', getArticle);
 
-// Define an endpoint for file uploads
-router.post('/upload', upload.single('file'), (req, res) => {
+// Protected routes
+router.post('/', protect, createArticle);
+router.post('/upload', protect, upload.single('file'), (req, res) => {
   if (!req.file) {
     return res.status(400).send('No file uploaded.');
   }
