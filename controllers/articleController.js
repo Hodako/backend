@@ -1,14 +1,14 @@
-const Article = require('../models/Article');
+// Example controller definitions
 
-exports.uploadArticle = async (req, res) => {
+const Article = require('../models/Article'); // Assuming you have an Article model
+
+exports.createArticle = async (req, res) => {
   try {
-    const { title, content, tags, userId } = req.body;
-    const thumbnail = req.file ? req.file.filename : null;
-    const publishDate = new Date();
-    const article = await Article.create({ title, content, tags, thumbnail, publishDate, userId });
-    res.status(201).json({ message: 'Article uploaded successfully', article });
+    const { title, content } = req.body;
+    const article = await Article.create({ title, content, userId: req.user.id });
+    res.status(201).json(article);
   } catch (error) {
-    res.status(500).json({ message: 'Error uploading article', error });
+    res.status(500).json({ message: 'Failed to create article', error: error.message });
   }
 };
 
@@ -17,11 +17,11 @@ exports.getArticles = async (req, res) => {
     const articles = await Article.findAll();
     res.status(200).json(articles);
   } catch (error) {
-    res.status(500).json({ message: 'Error fetching articles', error });
+    res.status(500).json({ message: 'Failed to get articles', error: error.message });
   }
 };
 
-exports.getArticleById = async (req, res) => {
+exports.getArticle = async (req, res) => {
   try {
     const { id } = req.params;
     const article = await Article.findByPk(id);
@@ -30,6 +30,6 @@ exports.getArticleById = async (req, res) => {
     }
     res.status(200).json(article);
   } catch (error) {
-    res.status(500).json({ message: 'Error fetching article', error });
+    res.status(500).json({ message: 'Failed to get article', error: error.message });
   }
 };
